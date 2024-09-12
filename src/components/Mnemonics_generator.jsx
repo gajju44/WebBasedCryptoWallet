@@ -1,33 +1,62 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { generateMnemonic } from 'bip39';
+import Solana from './Solana';
+
+
+
+
 
 export default function MnemonicsGen() {
     const [mnemonic, setMnemonic] = useState([]);
+    const [individualMnemonic, setIndividualMnemonic] = useState([]);
+    const [isClicked, setIsClicked] = useState(false);
+
+    const location = useLocation();
+    const {DerivationPath} = location.state || {};  
+  
 
     const GenerateMnemonic = () => {
         const mnemonicString = generateMnemonic();
-        setMnemonic(mnemonicString.split(" ")); // Split into words, not characters
+        setMnemonic(mnemonicString); 
+        setIndividualMnemonic(mnemonicString.split(" ")); 
         console.log(mnemonicString);
         document.getElementById('manemonicsshow').style.display = 'grid';
-
+        setIsClicked(true);
 
     };
    
     return (
         <>
-        <div className='h-screen w-full'>
+        <div className='h-screen w-screen'>
             
         
-           <div className='flex flex-col   '>
+           <div className='flex flex-col relative left-0 w-[80%] h-auto p-2 bg-[#111111] border-[0.5px] border-[#2b2b2b] rounded-md mb-6'>
             
-            <button onClick={GenerateMnemonic}>Generate</button>
-            <div id='manemonicsshow' className='will-change-auto mt-5 gap-4 grid-cols-4   p-7 border-[0.5px] border-[#2b2b2b] bg-[#222222]  rounded-xl hidden '>
-                {mnemonic.map((mne, index) => (
-                    <button key={index}  className=' gap-4 items-center justify-center flex '> {`${mne}`}</button>
+           <span className='flex gap-[77%] p-3 items-center'>  
+            <span className='text-2xl font-bold'>Generate Seed </span> 
+
+           <button onClick={GenerateMnemonic} disabled={isClicked} className='w-fit'>Generate</button>
+           
+           </span>
+
+            <div id='manemonicsshow' className='will-change-auto mt-5 gap-4 grid-cols-4   p-7 m-1 bg-inherit  rounded-xl hidden '>
+                { individualMnemonic.map((mnemonic, index) => (
+                    <button key={index}  className=' gap-4 items-center justify-center flex pointer-events-none '> {`${mnemonic}`}</button>
                 ))}
+
+               
             </div>
 
              </div>  
+
+             <div>
+
+                        <Solana mnemonic={mnemonic}/>
+
+             </div>
+
+
             </div>
         </>
     );

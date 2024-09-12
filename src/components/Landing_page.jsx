@@ -1,11 +1,12 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom';
+
+
 function Landing_page() {
 
   const navigate = useNavigate();
 
-  const handleRedirect = () => {
-    navigate("/CreateWallet");
+  const handleRedirect = (path,props) => {
+    navigate(path,{state:props});
   };
   
   return (
@@ -17,11 +18,11 @@ function Landing_page() {
             <div className="relative bottom-[-260px] left-0 z-10 animate-slide-right bg-[#ff85ed]  will-change-auto  opacity-80 blur-[90px]  w-[2000px] h-[100px]" />
             <div className="relative bottom-[-260px] left-0 z-10 animate-slide-left bg-[#00f7ff] will-change-auto  opacity-80 blur-[90px]  w-[2000px] h-[100px]" />
            <div className='flex flex-col absolute  top-32 items-center gap-10'>
-            <h1 className="text-7xl w-[730px] text-center font-semibold  ">Bridging the Gap Between You and Your Digital Wealth</h1>
+            <h1 className="text-7xl w-[730px] text-center font-semibold ">Bridging the Gap Between You and Your Digital Wealth</h1>
 
            <div className='flex gap-3 items-center'>
-           <button className='w-fit' onClick={handleRedirect}>Etherium</button> 
-            <button className='w-fit ' onClick={handleRedirect}>Solana</button>
+           <button className='w-fit' onClick={()=>handleRedirect('/CreateWallet', { DerivationPath: 'm/44/60/0' })}>Etherium</button> 
+            <button className='w-fit ' onClick={()=>handleRedirect('/CreateWallet', { DerivationPath: 'm/44/501/0' })}>Solana</button>
           
            </div> 
 
@@ -32,4 +33,4 @@ function Landing_page() {
   )
 }
 
-export default Landing_page
+export default Landing_page;

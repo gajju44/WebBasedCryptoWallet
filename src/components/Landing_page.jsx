@@ -11,7 +11,7 @@ function Landing_page() {
   
   return (
    <>
-     <div className='h-screen w-full flex justify-center items-center'>
+     <div className='h-screen w-screen overflow-hidden  flex absolute left-0 top-0 justify-center items-center'>
             
             
             <div className="absolute bottom-[-200px] left-[-30] z-0   bg-gradient-to-r from-[#ff00d9]  to-[#2e39ff] opacity-100 blur-[90px] rounded-full w-[130%] h-[400px]" />

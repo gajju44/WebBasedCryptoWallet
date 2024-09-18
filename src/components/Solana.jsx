@@ -3,8 +3,9 @@ import { mnemonicToSeed } from "bip39";
 import { derivePath } from "ed25519-hd-key";
 import { Keypair } from "@solana/web3.js";
 import nacl from "tweetnacl";
-import Show from "../assets/show.svg"
-import Hide from "../assets/hide.svg"
+import bs58 from 'bs58'; 
+import Show from "../assets/show.svg";
+import Hide from "../assets/hide.svg";
 
 
 
@@ -36,8 +37,8 @@ function Solana({mnemonic}) {
      
         setCurrentIndex((prevIndex) => prevIndex + 1);
         setPublicKeys((prevKeys) => [...prevKeys, keypair.publicKey.toBase58()]);
-        const privateKeyHex = Buffer.from(secret).toString('hex');
-        setPrivateKeys((prevKeys) => [...prevKeys, privateKeyHex]);
+        const privateKey =  bs58.encode(secret);
+        setPrivateKeys((prevKeys) => [...prevKeys, privateKey]);
         setVisibility((prev) => [...prev, false]);
     } catch (error) {
         console.error("Error adding wallet:", error);

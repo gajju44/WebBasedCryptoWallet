@@ -10,11 +10,63 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #111111;
+  --toastify-toast-min-height: 44px;
+  --toastify-toast-max-height: 50px;
+  --toastify-color-progress-success:#ffff;
+  --toastify-color-progress-error:#ffff;
+  --toastify-icon-color-error: #ffff;
+  --toastify-icon-color-success: #ffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+
+.Toastify__toast-body{
+  flex: none;
+}
+
+.Toastify__progress-bar--success {
+  height: 2px;
+  position: absolute;
+  bottom: 0;
+}
+.Toastify__progress-bar--error {
+  height: 2px;
+  position: absolute;
+  bottom: 0;
+}
+.Toastify__progress-bar {
+  height: 2px;
+  position: absolute;
+  bottom: 0;
+}
+
+.Toastify__toast {
+  border: 0.1px solid ;
+  border-color: #585858;
+  font-size: small;
+}
+
+.Toastify__toast-icon {
+  width: 15px;
+  height: 15px;
+}
+
+
+.Toastify__progress-bar {
+  background-color: #fff; /* Replace with your desired color */
+}
+
+.Toastify__progress-bar--container {
+  background-color: #ffffff; /* Set this to white */
+}
+
+.toastify-icon-success{
+  width: 10px;
+  height: 10px;
 }
 
 a {
@@ -33,7 +85,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow: auto;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 h1 {

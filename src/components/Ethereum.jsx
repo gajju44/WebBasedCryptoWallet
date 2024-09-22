@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { mnemonicToSeed } from "bip39";
 import { validateMnemonic } from "bip39";
 import { Wallet, HDNodeWallet } from "ethers";
@@ -10,16 +10,55 @@ import 'react-toastify/dist/ReactToastify.css';
 import Show from "../assets/show.svg";
 import Hide from "../assets/hide.svg";
 
-export const EthWallet = ({ mnemonic }) => {
+export const EthWallet = ({ mnemonic , clearMnemonic}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [publicKeys, setPublicKeys] = useState([]);
-  const [privateKeys, setPrivateKeys] = useState([]);
-  const [visibility, setVisibility] = useState([]);
+  const [publicKeys, setPublicKeys] = useState(() => {
+    const storedPublicKeys = localStorage.getItem('publicKeys');
+    return storedPublicKeys ? JSON.parse(storedPublicKeys) : [];
+  });
+  const [privateKeys, setPrivateKeys] = useState(() => {
+    const storedPrivateKeys = localStorage.getItem('privateKeys');
+    return storedPrivateKeys ? JSON.parse(storedPrivateKeys) : [];
+  });
+  const [visibility, setVisibility] = useState(() => {
+    const storedVisibility = localStorage.getItem('visibility');
+    return storedVisibility ? JSON.parse(storedVisibility) : [];
+  });
+
+
+  useEffect(() => {
+    localStorage.setItem('publicKeys', JSON.stringify(publicKeys));
+    localStorage.setItem('privateKeys', JSON.stringify(privateKeys));
+    localStorage.setItem('visibility', JSON.stringify(visibility));
+  }, [publicKeys, privateKeys, visibility]);
+
+
+  const handleClearStorage = () => {
+    setPublicKeys([]);
+    setPrivateKeys([]);
+    setVisibility([]);
+    setCurrentIndex(0);
+
+    // Clear localStorage
+    localStorage.removeItem('publicKeys');
+    localStorage.removeItem('privateKeys');
+    localStorage.removeItem('visibility');
+
+    // Clear the mnemonic as well
+    clearMnemonic();
+
+    setTimeout(() => {
+      toast.success('Data cleared successfully!', { containerId: 'ETHToast' });
+    }, 0);
+};
+
+
+
 
   const CopyToClipBoard = async(passedVar) => {
     if(mnemonic){
     await navigator.clipboard.writeText(passedVar);
-    toast.success('Copied to clipboard!');
+    toast.success('Copied to clipboard!', { containerId: 'ETHToast' });
 
 }
    }
@@ -34,7 +73,7 @@ export const EthWallet = ({ mnemonic }) => {
   const handleAddWallet = async () => {
     try {
       if (!mnemonic || !validateMnemonic(mnemonic)) {
-        toast.error("Invalid mnemonic provided");
+        toast.error("Invalid mnemonic provided", { containerId: 'ETHToast' });
       }
     else{ const seed = await mnemonicToSeed(mnemonic);
       const derivationPath = `m/44'/60'/${currentIndex}'/0'`;
@@ -44,10 +83,10 @@ export const EthWallet = ({ mnemonic }) => {
       const wallet = new Wallet(privateKey);
 
       if(!wallet){
-        toast.error("Error Adding Wallet") 
+        toast.error("Error Adding Wallet", { containerId: 'ETHToast' }) 
       }
       else{
-      toast.success('Wallet Generated Successfully');}
+      toast.success('Wallet Generated Successfully', { containerId: 'ETHToast' });}
 
       setCurrentIndex((prevIndex) => prevIndex + 1);
       setPublicKeys((prevKeys) => [...prevKeys, wallet.address]);
@@ -61,25 +100,28 @@ export const EthWallet = ({ mnemonic }) => {
 
   return (
     <>
-   <ToastContainer
-position="bottom-right"
-autoClose={1000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-theme="dark"
-transition={Slide} 
-closeButton={false}
-/>
+ <ToastContainer
+        position="bottom-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Slide}
+        closeButton={false}
+        containerId="ETHToast"
+      />
     <div className=" flex flex-col gap-5 w-full h-auto p-4 bg-[#111111] border-[0.5px] border-[#2b2b2b] mb-6 overflow-x-hidden rounded-md">
       <span className="flex justify-between p-3 items-center whitespace-nowrap">
         <span className="text-2xl font-bold select-none">Ethereum Wallets</span>
+        <div className="flex gap-2">
         <button onClick={handleAddWallet} className="select-none">Add ETH Wallet</button>
+        <button onClick={handleClearStorage} className="bg-red-500 text-white px-3 py-1 rounded">Clear All Wallet</button>
+        </div>
       </span>
 
       {publicKeys.map((publicKey, index) => (

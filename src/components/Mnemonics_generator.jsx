@@ -121,8 +121,9 @@ export default function MnemonicsGen() {
         closeButton={false}
         containerId="mnemonicsToast"
       />
+     
+      <div className="h-screen overflow-x-hidden w-screen absolute top-0 pt-24 left-0 mb-6 flex flex-col items-center gap-5 py-11">
       <Navbar />
-      <div className="h-screen overflow-x-hidden w-screen absolute top-16 left-0 mb-6 flex flex-col items-center gap-5 py-11">
         <div className="select-none flex flex-col relative left-0 w-[90.3%] h-auto p-4 bg-[#111111] border-[0.5px] border-[#2b2b2b] rounded-md">
           <span
             onClick={handleDropDown}
@@ -158,7 +159,7 @@ export default function MnemonicsGen() {
                 DerivationPath === "m/44/60/0" ? ETHmnemonic : Solmnemonic
               )
             }
-            className={`will-change-auto cursor-pointer overflow-hidden mt-5 gap-4 grid grid-cols-4 m-1 bg-inherit transition-all duration-700 ease-in-out rounded-xl ${
+            className={`will-change-auto cursor-pointer overflow-hidden mt-5 gap-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 m-1 bg-inherit transition-all duration-700 ease-in-out rounded-xl ${
               IsDropDown ? "max-h-0 opacity-0" : "max-h-max opacity-100"
             }`}
           >
@@ -170,8 +171,10 @@ export default function MnemonicsGen() {
                 {mnemonic}
               </button>
             ))}
-            <span
-              className={`flex mt-6 text-[#868686] items-center gap-1 ${
+           
+          </div>
+          <span
+              className={`flex mt-6 text-[#868686]  items-center gap-1 ${
                 isClicked ? "" : "hidden"
               }`}
             >
@@ -179,7 +182,6 @@ export default function MnemonicsGen() {
               <img src={Copy} alt="Copy icon" className="w-[24px] h-[24px] " />
               Click Anywhere To Copy{" "}
             </span>
-          </div>
 
           <div className={`flex flex-col mt-5 ${isClicked ? "hidden" : ""}`}>
             <span className="text-xl font-bold">

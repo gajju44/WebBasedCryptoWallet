@@ -127,7 +127,7 @@ export default function MnemonicsGen() {
         <div className="select-none flex flex-col relative left-0 w-[90.3%] h-auto p-4 bg-[#111111] border-[0.5px] border-[#2b2b2b] rounded-md">
           <span
             onClick={handleDropDown}
-            className="flex justify-between p-3 items-center"
+            className={`flex  justify-between  ${isClicked ? "" : "flex-col"} sm:flex-row p-3 items-center`}
           >
             <span className="text-2xl font-bold whitespace-nowrap">
               Your Wallet's Seed

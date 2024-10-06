@@ -35,7 +35,7 @@ const WalletComponent = ({
         containerId={`${network}Toast`}
       />
 
-      <div className="flex flex-col gap-5 w-full h-auto p-4 bg-[#111111] border-[0.5px] border-[#2b2b2b] mb-6  rounded-md">
+      <div className="flex flex-col gap-5 w-full h-auto p-4  border-[0.5px]  mb-6  rounded-md">
         <span className="select-none flex flex-col sm:flex-row justify-between p-3 items-center whitespace-nowrap">
           <span className="text-2xl font-bold">{network} Wallet</span>
           <div className="flex gap-2">
@@ -52,7 +52,7 @@ const WalletComponent = ({
         {publicKeys.map((publicKey, index) => (
           <div
             key={index}
-            className="select-none flex flex-col gap-3 bg-[#111111] border-[0.5px] border-[#2b2b2b] mb-3 p-4 rounded-md"
+            className="select-none flex flex-col gap-3  border-[0.5px]  mb-3 p-4 rounded-md"
           >
             <span className="text-left text-2xl font-bold pl-5 my-4">
               Wallet {index + 1}

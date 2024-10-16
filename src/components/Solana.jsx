@@ -81,7 +81,7 @@ function Solana({ mnemonic, clearMnemonic }) {
   }, [SolPublicKeys, SolPrivateKeys, SolVisibility, SolCurrentIndex]);
 
   const handleSolClearStorage = () => {
-    setSolPublicKeys([]);
+    if (mnemonic) { setSolPublicKeys([]);
     setSolPrivateKeys([]);
     setSolVisibility([]);
     setSolCurrentIndex(0);
@@ -99,7 +99,7 @@ function Solana({ mnemonic, clearMnemonic }) {
       toast.success("Data cleared successfully!", {
         containerId: "solanaToast",
       });
-    }, 0);
+    }, 0);}
   };
 
   return (

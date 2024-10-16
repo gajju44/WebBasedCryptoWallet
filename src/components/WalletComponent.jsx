@@ -1,9 +1,10 @@
-
+import { useState } from "react";
 import { ToastContainer, Slide } from "react-toastify"; 
 import 'react-toastify/dist/ReactToastify.css';
 
 import ShowIcon from "../assets/show.svg";
 import HideIcon from "../assets/hide.svg";
+import Delete from "../assets/delete.gif"
 
 const WalletComponent = ({
   network,
@@ -17,6 +18,36 @@ const WalletComponent = ({
  
 
 }) => {
+  // const [MnemonicCheck, setMnemonicCheck] = useState();
+  
+ 
+
+  const [isLoading, setIsLoading] = useState(false);
+  
+
+  const handleClick = async () => {
+
+    const mnemonicExists =
+      network === "Ethereum"
+        ? localStorage.getItem("ETHmnemonic")
+        : network === "Solana"
+        ? localStorage.getItem("Solmnemonic")
+        : localStorage.getItem("Bitmnemonic");
+
+    if(mnemonicExists)
+   { setIsLoading(true);
+
+    
+     await setTimeout(() => {
+      setIsLoading(false);
+      handleClearStorage(); 
+    }, 3000); 
+    }
+   
+
+  };
+
+
   return (
     <>
       <ToastContainer
@@ -41,10 +72,18 @@ const WalletComponent = ({
           <div className="flex gap-2">
             <button onClick={handleAddWallet}>Add {network} Wallet</button>
             <button
-              onClick={handleClearStorage}
+              onClick={handleClick}
               className="bg-red-500 text-white px-3 py-1 rounded"
             >
-              Clear All
+           {isLoading ? (
+        <img
+          src={Delete}
+          alt="Loading..."
+          className="w-10 h-10" 
+        />
+      ) : (
+        "Clear All"
+      )}
             </button>
           </div>
         </span>

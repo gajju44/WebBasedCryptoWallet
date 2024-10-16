@@ -42,7 +42,7 @@ export const EthWallet = ({ mnemonic, clearMnemonic }) => {
   }, [ETHPublicKeys, ETHPrivateKeys, ETHVisibility, ETHCurrentIndex]);
 
   const handleETHClearStorage = () => {
-    setETHPublicKeys([]);
+    if(mnemonic){setETHPublicKeys([]);
     setETHPrivateKeys([]);
     setETHVisibility([]);
     setETHCurrentIndex(0);
@@ -58,7 +58,7 @@ export const EthWallet = ({ mnemonic, clearMnemonic }) => {
 
     setTimeout(() => {
       toast.success("Data cleared successfully!", { containerId: "ETHToast" });
-    }, 0);
+    }, 0);}
   };
 
   const handleETHToggle = (index) => {

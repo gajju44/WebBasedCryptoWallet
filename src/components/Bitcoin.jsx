@@ -87,7 +87,7 @@ function Bitcoin({ mnemonic, clearMnemonic }) {
   }, [BitcoinPublicKeys, BitcoinPrivateKeys, BitcoinVisibility, BitcoinCurrentIndex]);
 
   const handleBitcoinClearStorage = () => {
-    setBitcoinPublicKeys([]);
+    if (mnemonic){setBitcoinPublicKeys([]);
     setBitcoinPrivateKeys([]);
     setBitcoinVisibility([]);
     setBitcoinCurrentIndex(0);
@@ -100,7 +100,7 @@ function Bitcoin({ mnemonic, clearMnemonic }) {
     clearMnemonic();
     setTimeout(() => {
       toast.success("Data cleared successfully!", { containerId: "bitcoinToast" });
-    }, 0);
+    }, 0);}
   };
 
   return (

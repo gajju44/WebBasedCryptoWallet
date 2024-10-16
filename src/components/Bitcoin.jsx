@@ -12,6 +12,7 @@ import WalletComponent from "./WalletComponent";
 
 function Bitcoin({ mnemonic, clearMnemonic }) {
   const ECPair = ECPairFactory(ecc);
+  
   const [BitcoinCurrentIndex, setBitcoinCurrentIndex] = useState(() => {
     const storedIndex = localStorage.getItem("BitcoinCurrentIndex");
     return storedIndex ? parseInt(storedIndex) : 0;

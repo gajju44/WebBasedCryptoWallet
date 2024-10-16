@@ -8,11 +8,9 @@ import * as ecc from 'tiny-secp256k1';
 import WalletComponent from "./WalletComponent";
 
 
-
+const ECPair = ECPairFactory(ecc);
 
 function Bitcoin({ mnemonic, clearMnemonic }) {
-  const ECPair = ECPairFactory(ecc);
-  
   const [BitcoinCurrentIndex, setBitcoinCurrentIndex] = useState(() => {
     const storedIndex = localStorage.getItem("BitcoinCurrentIndex");
     return storedIndex ? parseInt(storedIndex) : 0;

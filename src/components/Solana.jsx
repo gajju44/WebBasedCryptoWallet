@@ -5,12 +5,10 @@ import { validateMnemonic } from "bip39";
 import { Keypair } from "@solana/web3.js";
 import nacl from "tweetnacl";
 import bs58 from "bs58";
-
 import { ToastContainer, toast } from "react-toastify";
 import { Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Show from "../assets/show.svg";
-import Hide from "../assets/hide.svg";
+import WalletComponent from "./WalletComponent";
 
 function Solana({ mnemonic, clearMnemonic }) {
   const [SolCurrentIndex, setSolCurrentIndex] = useState(() => {
@@ -106,7 +104,7 @@ function Solana({ mnemonic, clearMnemonic }) {
 
   return (
     <>
-      <ToastContainer
+  <ToastContainer
         position="bottom-right"
         autoClose={1000}
         hideProgressBar={false}
@@ -119,71 +117,21 @@ function Solana({ mnemonic, clearMnemonic }) {
         theme="dark"
         transition={Slide}
         closeButton={false}
-        containerId="solanaToast"
+        containerId={`solanaToast`}
       />
 
-      <div className="flex flex-col gap-5 w-full h-auto p-4 bg-[#111111] border-[0.5px] border-[#2b2b2b] mb-6 overflow-x-hidden rounded-md">
-        <span className="select-none flex justify-between p-3 items-center whitespace-nowrap">
-          <span className="text-2xl font-bold">Solana Wallet </span>
-          <div className="flex gap-2">
-            <button onClick={handleSolAddWallet}>Add SOL Wallet</button>
-            <button
-              onClick={handleSolClearStorage}
-              className="bg-red-500 text-white px-3 py-1 rounded"
-            >
-              Clear All
-            </button>
-          </div>
-        </span>
-
-        {SolPublicKeys.map((publicKey, index) => (
-          <div
-            key={index}
-            className="select-none flex flex-col gap-3 bg-[#111111] border-[0.5px] border-[#2b2b2b] mb-3 p-4 rounded-md"
-          >
-            <span className="text-left text-2xl font-bold pl-5 my-4">
-              Wallet {index + 1}{" "}
-            </span>
-            <button
-              className="text-left gap-2 flex flex-col break-words hover:text-white"
-              onClick={() => CopyToClipBoard(publicKey)}
-            >
-              <span className="text-xl font-bold">Public Key</span> {publicKey}
-            </button>
-            <button
-              className="text-left gap-2 flex flex-col hover:text-white"
-              onClick={() => CopyToClipBoard(SolPrivateKeys[index])}
-            >
-              <span className="text-xl font-bold w-full flex justify-between items-center whitespace-nowrap">
-                <span>Private Key </span>
-                <button
-                  className="rounded-full bg-inherit w-7 h-7 flex justify-center items-center p-0 hover:bg-[#99999948] hover:border-none"
-                  onClick={() => handleSolToggle(index)}
-                >
-                  {SolVisibility[index] ? (
-                    <img
-                      src={Show}
-                      alt="Show icon"
-                      className="w-[15px] h-[15px]"
-                    />
-                  ) : (
-                    <img
-                      src={Hide}
-                      alt="Hide icon"
-                      className="w-[15px] h-[15px]"
-                    />
-                  )}
-                </button>
-              </span>
-              <span className="w-[96%] break-words">
-                {SolVisibility[index]
-                  ? SolPrivateKeys[index]
-                  : "* * * * * * * * * * * * * * * * * * * * * * * * *"}
-              </span>
-            </button>
-          </div>
-        ))}
-      </div>
+     <WalletComponent
+      network="Solana"
+      handleAddWallet={handleSolAddWallet}
+      handleClearStorage={handleSolClearStorage}
+      publicKeys={SolPublicKeys}
+      privateKeys={SolPrivateKeys}
+      visibility={SolVisibility}
+      toggleVisibility={handleSolToggle}
+      copyToClipboard={CopyToClipBoard}
+    
+     
+    />
     </>
   );
 }

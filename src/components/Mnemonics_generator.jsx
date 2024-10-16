@@ -11,9 +11,11 @@ import Navbar from "./Navbar";
 import Copy from "../assets/copy.svg";
 import DownArrow from "../assets/down_arrow.svg";
 import UpArrow from "../assets/up_arrow.svg";
+import Bitcoin from "./Bitcoin";
 
 export default function MnemonicsGen() {
   const [Solmnemonic, setSolMnemonic] = useState("");
+  const [Bitmnemonic, setBitMnemonic] = useState("");
   const [ETHmnemonic, setETHMnemonic] = useState("");
   const [individualMnemonic, setIndividualMnemonic] = useState([]);
   const [isClicked, setIsClicked] = useState(false);
@@ -40,6 +42,14 @@ export default function MnemonicsGen() {
         setIsClicked(true);
       }
     }
+    else if (DerivationPath === "m/44/0/0") {
+      const storedBitMnemonic = localStorage.getItem("Bitmnemonic");
+      if (storedBitMnemonic) {
+        setBitMnemonic(storedBitMnemonic);
+        setIndividualMnemonic(storedBitMnemonic.split(" "));
+        setIsClicked(true);
+      }
+    }
   }, [DerivationPath]);
 
   // Save mnemonic to local storage whenever it changes
@@ -49,7 +59,10 @@ export default function MnemonicsGen() {
     } else if (Solmnemonic && DerivationPath === "m/44/501/0") {
       localStorage.setItem("Solmnemonic", Solmnemonic);
     }
-  }, [ETHmnemonic, Solmnemonic, DerivationPath]);
+    else if (Bitmnemonic && DerivationPath === "m/44/0/0") {
+      localStorage.setItem("Bitmnemonic", Bitmnemonic);
+    }
+  }, [ETHmnemonic, Solmnemonic, Bitmnemonic, DerivationPath]);
 
   const handleDropDown = () => {
     setIsDropDown(!IsDropDown);
@@ -61,6 +74,9 @@ export default function MnemonicsGen() {
       setETHMnemonic(mnemonicString);
     } else if (DerivationPath === "m/44/501/0") {
       setSolMnemonic(mnemonicString);
+    }
+    else if (DerivationPath === "m/44/0/0") {
+      setBitMnemonic(mnemonicString);
     }
     setIndividualMnemonic(mnemonicString.split(" "));
     setIsClicked(true);
@@ -84,6 +100,8 @@ export default function MnemonicsGen() {
         setETHMnemonic(customMnemonic);
       } else if (DerivationPath === "m/44/501/0") {
         setSolMnemonic(customMnemonic);
+      }else if (DerivationPath === "m/44/0/0") {
+        setBitMnemonic(customMnemonic);
       }
       setIndividualMnemonic(customMnemonic.split(" "));
       setIsClicked(true);
@@ -99,6 +117,9 @@ export default function MnemonicsGen() {
     } else if (DerivationPath === "m/44/501/0") {
       setSolMnemonic(""); // Clear Sol state
       localStorage.removeItem("Solmnemonic"); // Clear Sol from localStorage
+    }else if (DerivationPath === "m/44/0/0") {
+      setBitMnemonic(""); // Clear Sol state
+      localStorage.removeItem("Bitmnemonic"); // Clear Sol from localStorage
     }
     setIndividualMnemonic([]); // Clear individual mnemonic array
     setIsClicked(false); // Reset button visibility
@@ -124,13 +145,13 @@ export default function MnemonicsGen() {
      
       <div className="h-screen overflow-x-hidden w-screen absolute top-0 pt-24 left-0 mb-6 flex flex-col items-center gap-5 py-11">
       <Navbar />
-        <div className="select-none flex flex-col relative left-0 w-[90.3%] h-auto p-4 bg-[#111111] border-[0.5px] border-[#2b2b2b] rounded-md">
+        <div className="select-none flex flex-col relative left-0 w-[90.3%] h-auto p-4  border-[0.5px] rounded-md">
           <span
             onClick={handleDropDown}
             className={`flex  justify-between  ${isClicked ? "" : "flex-col"} sm:flex-row p-3 items-center`}
           >
             <span className="text-2xl font-bold whitespace-nowrap">
-              Your Wallet's Seed
+              Your Wallet's Mnemonic
             </span>
             <button
               onClick={GenerateMnemonic}
@@ -156,7 +177,7 @@ export default function MnemonicsGen() {
             id="mnemonicsshow"
             onClick={() =>
               CopyToClipBoard(
-                DerivationPath === "m/44/60/0" ? ETHmnemonic : Solmnemonic
+                DerivationPath === "m/44/60/0" ? ETHmnemonic : DerivationPath === "m/44/0/0" ? Bitmnemonic : Solmnemonic
               )
             }
             className={`will-change-auto cursor-pointer overflow-hidden mt-5 gap-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 m-1 bg-inherit transition-all duration-700 ease-in-out rounded-xl ${
@@ -175,10 +196,10 @@ export default function MnemonicsGen() {
           </div>
           <span
               className={`flex mt-6 text-[#868686]  items-center gap-1 ${
-                isClicked ? "" : "hidden"
+                !IsDropDown && isClicked ? "" : "hidden"
               }`}
             >
-              {" "}
+             
               <img src={Copy} alt="Copy icon" className="w-[24px] h-[24px] " />
               Click Anywhere To Copy{" "}
             </span>
@@ -189,7 +210,7 @@ export default function MnemonicsGen() {
             </span>
             <input
               type="text"
-              className="p-3 mt-2 bg-[#222222] text-white rounded-md"
+              className="p-3 mt-2  text-white rounded-md"
               rows={4}
               placeholder="Enter your 12 or 24-word mnemonic here..."
               value={customMnemonic}
@@ -205,6 +226,13 @@ export default function MnemonicsGen() {
           <div className="w-[90.3%] flex justify-center flex-col">
             <Solana
               mnemonic={Solmnemonic}
+              clearMnemonic={handleClearMnemonic}
+            />
+          </div>
+        ) : DerivationPath === "m/44/0/0" ? (
+          <div className="w-[90.3%] flex justify-center flex-col">
+            <Bitcoin
+              mnemonic={Bitmnemonic}
               clearMnemonic={handleClearMnemonic}
             />
           </div>

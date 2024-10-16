@@ -23,6 +23,15 @@ function Landing_page() {
           </h1>
 
           <div className="flex gap-3 items-center">
+          <button
+              className="w-fit select-none z-50"
+              onClick={() =>
+                handleRedirect("/CreateWallet", { DerivationPath: "m/44/0/0" })
+              }
+            >
+              Bitcoin
+            </button>
+
             <button
               className="w-fit select-none z-50"
               onClick={() =>
@@ -31,6 +40,7 @@ function Landing_page() {
             >
               Etherium
             </button>
+
             <button
               className="w-fit select-none z-50"
               onClick={() =>

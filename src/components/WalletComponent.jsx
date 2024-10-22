@@ -97,14 +97,14 @@ const WalletComponent = ({
               Wallet {index + 1}
             </span>
             <button
-              className="text-left gap-2 flex flex-col hover:text-[#5961cc]"
+              className="text-left gap-2 flex flex-col hover:text-[#959595]"
               onClick={() => copyToClipboard(publicKey)}
             >
               <span className="text-xl font-bold">Public Key</span>
               <p className="w-[96%] truncate">{publicKey}</p>
             </button>
             <button
-              className="text-left gap-2 flex flex-col cursor-default hover:text-[#5961cc]"
+              className="text-left gap-2 flex flex-col cursor-default hover:text-[#959595]"
              
             >
               <span className="text-xl font-bold w-full flex justify-between items-center whitespace-nowrap">
@@ -120,7 +120,7 @@ const WalletComponent = ({
                   )}
                 </button>
               </span>
-              <p className="w-[96%] truncate cursor-pointer hover:text-[#5961cc] select-none"  onClick={() => copyToClipboard(privateKeys[index])}>
+              <p className="w-[96%] truncate cursor-pointer hover:text-[#959595] select-none"  onClick={() => copyToClipboard(privateKeys[index])}>
                 {visibility[index]
                   ? privateKeys[index]
                   : "* * * * * * * * * * * * * * * * * * * * * * * * *"}

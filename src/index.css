@@ -35,6 +35,7 @@
 }
 
 
+
 html[data-theme="dark"] {
   background-color: var(--background-dark);
   --button-bg:#1a1a1a;
@@ -127,6 +128,7 @@ input{
 }
 
 
+ 
 button {
   border-radius: 8px;
   border: 1px solid transparent;

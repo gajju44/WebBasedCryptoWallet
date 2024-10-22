@@ -1,13 +1,13 @@
 
->🌐 Web-Based Crypto Wallet
+>🌐DeltaSafe
 
-Web-Based Crypto Wallet is a decentralized, multi-chain wallet built with React and Vite, supporting Solana and Ethereum blockchains. With a focus on privacy, the wallet allows users to generate and manage mnemonics and wallets without storing sensitive information locally. Its mosty used to recover the keypairs from mnemonics
+DeltaSafe is a decentralized, multi-chain wallet built with React and Vite, supporting Solana and Ethereum blockchains. With a focus on privacy, the wallet allows users to generate and manage mnemonics and wallets without storing sensitive information locally. Its mosty used to recover the keypairs from mnemonics
 
 
 >🛠️ Tech Stack
 
 Frontend: React, Vite, Tailwind CSS
-Blockchain: Solana, Ethereum (via Web3.js, ethers.js)
+Blockchain: Bitcoin, Solana, Ethereum (via Web3.js, ethers.js, bitcoinjs-lib)
 Key Management: bip39, ed25519-hd-key
 Notifications: React Toastify
 Particles: tsparticles for animated background effects

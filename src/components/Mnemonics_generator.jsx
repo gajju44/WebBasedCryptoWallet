@@ -7,11 +7,13 @@ import { ToastContainer, toast } from "react-toastify";
 import { Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./Navbar";
-
+import CryptoJS from "crypto-js";
 import Copy from "../assets/copy.svg";
 import DownArrow from "../assets/down_arrow.svg";
 import UpArrow from "../assets/up_arrow.svg";
 import Bitcoin from "./Bitcoin";
+
+const SECRET_KEY = "********"; 
 
 export default function MnemonicsGen() {
   const [Solmnemonic, setSolMnemonic] = useState("");
@@ -25,42 +27,52 @@ export default function MnemonicsGen() {
   const location = useLocation();
   const { DerivationPath } = location.state || {};
 
-  // Load mnemonic from local storage based on DerivationPath
+  
   useEffect(() => {
+    const decryptMnemonic = (encryptedMnemonic) => {
+      const bytes = CryptoJS.AES.decrypt(encryptedMnemonic, SECRET_KEY);
+      return bytes.toString(CryptoJS.enc.Utf8);
+    };
+
     if (DerivationPath === "m/44/60/0") {
       const storedETHMnemonic = localStorage.getItem("ETHmnemonic");
       if (storedETHMnemonic) {
-        setETHMnemonic(storedETHMnemonic);
-        setIndividualMnemonic(storedETHMnemonic.split(" "));
+        const decrypted = decryptMnemonic(storedETHMnemonic);
+        setETHMnemonic(decrypted);
+        setIndividualMnemonic(decrypted.split(" "));
         setIsClicked(true);
       }
     } else if (DerivationPath === "m/44/501/0") {
       const storedSolMnemonic = localStorage.getItem("Solmnemonic");
       if (storedSolMnemonic) {
-        setSolMnemonic(storedSolMnemonic);
-        setIndividualMnemonic(storedSolMnemonic.split(" "));
+        const decrypted = decryptMnemonic(storedSolMnemonic);
+        setSolMnemonic(decrypted);
+        setIndividualMnemonic(decrypted.split(" "));
         setIsClicked(true);
       }
-    }
-    else if (DerivationPath === "m/44/0/0") {
+    } else if (DerivationPath === "m/44/0/0") {
       const storedBitMnemonic = localStorage.getItem("Bitmnemonic");
       if (storedBitMnemonic) {
-        setBitMnemonic(storedBitMnemonic);
-        setIndividualMnemonic(storedBitMnemonic.split(" "));
+        const decrypted = decryptMnemonic(storedBitMnemonic);
+        setBitMnemonic(decrypted);
+        setIndividualMnemonic(decrypted.split(" "));
         setIsClicked(true);
       }
     }
   }, [DerivationPath]);
 
-  // Save mnemonic to local storage whenever it changes
+  
   useEffect(() => {
+    const encryptMnemonic = (mnemonic) => {
+      return CryptoJS.AES.encrypt(mnemonic, SECRET_KEY).toString();
+    };
+
     if (ETHmnemonic && DerivationPath === "m/44/60/0") {
-      localStorage.setItem("ETHmnemonic", ETHmnemonic);
+      localStorage.setItem("ETHmnemonic", encryptMnemonic(ETHmnemonic));
     } else if (Solmnemonic && DerivationPath === "m/44/501/0") {
-      localStorage.setItem("Solmnemonic", Solmnemonic);
-    }
-    else if (Bitmnemonic && DerivationPath === "m/44/0/0") {
-      localStorage.setItem("Bitmnemonic", Bitmnemonic);
+      localStorage.setItem("Solmnemonic", encryptMnemonic(Solmnemonic));
+    } else if (Bitmnemonic && DerivationPath === "m/44/0/0") {
+      localStorage.setItem("Bitmnemonic", encryptMnemonic(Bitmnemonic));
     }
   }, [ETHmnemonic, Solmnemonic, Bitmnemonic, DerivationPath]);
 
@@ -74,8 +86,7 @@ export default function MnemonicsGen() {
       setETHMnemonic(mnemonicString);
     } else if (DerivationPath === "m/44/501/0") {
       setSolMnemonic(mnemonicString);
-    }
-    else if (DerivationPath === "m/44/0/0") {
+    } else if (DerivationPath === "m/44/0/0") {
       setBitMnemonic(mnemonicString);
     }
     setIndividualMnemonic(mnemonicString.split(" "));
@@ -100,7 +111,7 @@ export default function MnemonicsGen() {
         setETHMnemonic(customMnemonic);
       } else if (DerivationPath === "m/44/501/0") {
         setSolMnemonic(customMnemonic);
-      }else if (DerivationPath === "m/44/0/0") {
+      } else if (DerivationPath === "m/44/0/0") {
         setBitMnemonic(customMnemonic);
       }
       setIndividualMnemonic(customMnemonic.split(" "));
@@ -112,17 +123,17 @@ export default function MnemonicsGen() {
 
   const handleClearMnemonic = () => {
     if (DerivationPath === "m/44/60/0") {
-      setETHMnemonic(""); // Clear ETH state
-      localStorage.removeItem("ETHmnemonic"); // Clear ETH from localStorage
+      setETHMnemonic(""); 
+      localStorage.removeItem("ETHmnemonic"); 
     } else if (DerivationPath === "m/44/501/0") {
-      setSolMnemonic(""); // Clear Sol state
-      localStorage.removeItem("Solmnemonic"); // Clear Sol from localStorage
-    }else if (DerivationPath === "m/44/0/0") {
-      setBitMnemonic(""); // Clear Sol state
-      localStorage.removeItem("Bitmnemonic"); // Clear Sol from localStorage
+      setSolMnemonic(""); 
+      localStorage.removeItem("Solmnemonic"); 
+    } else if (DerivationPath === "m/44/0/0") {
+      setBitMnemonic("");
+      localStorage.removeItem("Bitmnemonic"); 
     }
-    setIndividualMnemonic([]); // Clear individual mnemonic array
-    setIsClicked(false); // Reset button visibility
+    setIndividualMnemonic([]);
+    setIsClicked(false); 
   };
 
   return (
@@ -148,9 +159,9 @@ export default function MnemonicsGen() {
         <div className="select-none flex flex-col relative left-0 w-[90.3%] h-auto p-4  border-[0.5px] rounded-md">
           <span
             onClick={handleDropDown}
-            className={`flex  justify-between  ${isClicked ? "" : "flex-col"} sm:flex-row p-3 items-center`}
+            className={`flex gap-4 md:justify-between  sm:flex-row flex-col p-3 items-center`}
           >
-            <span className="text-2xl font-bold whitespace-nowrap">
+            <span className="text-xl md:text-2xl font-bold whitespace-nowrap">
               Your Wallet's Mnemonic
             </span>
             <button
@@ -192,14 +203,12 @@ export default function MnemonicsGen() {
                 {mnemonic}
               </button>
             ))}
-           
           </div>
           <span
               className={`flex mt-6 text-[#868686]  items-center gap-1 ${
                 !IsDropDown && isClicked ? "" : "hidden"
               }`}
             >
-             
               <img src={Copy} alt="Copy icon" className="w-[24px] h-[24px] " />
               Click Anywhere To Copy{" "}
             </span>

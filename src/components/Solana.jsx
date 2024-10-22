@@ -9,23 +9,43 @@ import { ToastContainer, toast } from "react-toastify";
 import { Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import WalletComponent from "./WalletComponent";
+import CryptoJS from "crypto-js"; 
+
+const secretKey = "********";
 
 function Solana({ mnemonic, clearMnemonic }) {
+
+  const encryptData = (data) => CryptoJS.AES.encrypt(JSON.stringify(data), secretKey).toString();
+
+
+  const decryptData = (encryptedData) => {
+    try {
+      const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+      return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    } catch (e) {
+      console.error("Error decrypting data", e);
+      return null;
+    }
+  };
+
   const [SolCurrentIndex, setSolCurrentIndex] = useState(() => {
     const storedSolCurrentIndex = localStorage.getItem("SolCurrentIndex");
-    return storedSolCurrentIndex ? JSON.parse(storedSolCurrentIndex) : 0;
+    return storedSolCurrentIndex ? decryptData(storedSolCurrentIndex) : 0;
   });
+
   const [SolPublicKeys, setSolPublicKeys] = useState(() => {
     const storedPublicKeys = localStorage.getItem("SolPublicKeys");
-    return storedPublicKeys ? JSON.parse(storedPublicKeys) : [];
+    return storedPublicKeys ? decryptData(storedPublicKeys) : [];
   });
+
   const [SolPrivateKeys, setSolPrivateKeys] = useState(() => {
     const storedPrivateKeys = localStorage.getItem("SolPrivateKeys");
-    return storedPrivateKeys ? JSON.parse(storedPrivateKeys) : [];
+    return storedPrivateKeys ? decryptData(storedPrivateKeys) : [];
   });
+
   const [SolVisibility, setSolVisibility] = useState(() => {
     const storedVisibility = localStorage.getItem("SolVisibility");
-    return storedVisibility ? JSON.parse(storedVisibility) : [];
+    return storedVisibility ? decryptData(storedVisibility) : [];
   });
 
   const CopyToClipBoard = async (passedVar) => {
@@ -74,37 +94,39 @@ function Solana({ mnemonic, clearMnemonic }) {
   };
 
   useEffect(() => {
-    localStorage.setItem("SolPublicKeys", JSON.stringify(SolPublicKeys));
-    localStorage.setItem("SolPrivateKeys", JSON.stringify(SolPrivateKeys));
-    localStorage.setItem("SolVisibility", JSON.stringify(SolVisibility));
-    localStorage.setItem("SolCurrentIndex", JSON.stringify(SolCurrentIndex));
+    localStorage.setItem("SolPublicKeys", encryptData(SolPublicKeys));
+    localStorage.setItem("SolPrivateKeys", encryptData(SolPrivateKeys));
+    localStorage.setItem("SolVisibility", encryptData(SolVisibility));
+    localStorage.setItem("SolCurrentIndex", encryptData(SolCurrentIndex));
   }, [SolPublicKeys, SolPrivateKeys, SolVisibility, SolCurrentIndex]);
 
   const handleSolClearStorage = () => {
-    if (mnemonic) { setSolPublicKeys([]);
-    setSolPrivateKeys([]);
-    setSolVisibility([]);
-    setSolCurrentIndex(0);
+    if (mnemonic) {
+      setSolPublicKeys([]);
+      setSolPrivateKeys([]);
+      setSolVisibility([]);
+      setSolCurrentIndex(0);
 
-    // Clear localStorage
-    localStorage.removeItem("SolPublicKeys");
-    localStorage.removeItem("SolPrivateKeys");
-    localStorage.removeItem("SolVisibility");
-    localStorage.removeItem("SolCurrentIndex");
+   
+      localStorage.removeItem("SolPublicKeys");
+      localStorage.removeItem("SolPrivateKeys");
+      localStorage.removeItem("SolVisibility");
+      localStorage.removeItem("SolCurrentIndex");
 
-    // Clear the mnemonic as well
-    clearMnemonic();
+   
+      clearMnemonic();
 
-    setTimeout(() => {
-      toast.success("Data cleared successfully!", {
-        containerId: "solanaToast",
-      });
-    }, 0);}
+      setTimeout(() => {
+        toast.success("Data cleared successfully!", {
+          containerId: "solanaToast",
+        });
+      }, 0);
+    }
   };
 
   return (
     <>
-  <ToastContainer
+      <ToastContainer
         position="bottom-right"
         autoClose={1000}
         hideProgressBar={false}
@@ -120,18 +142,16 @@ function Solana({ mnemonic, clearMnemonic }) {
         containerId={`solanaToast`}
       />
 
-     <WalletComponent
-      network="Solana"
-      handleAddWallet={handleSolAddWallet}
-      handleClearStorage={handleSolClearStorage}
-      publicKeys={SolPublicKeys}
-      privateKeys={SolPrivateKeys}
-      visibility={SolVisibility}
-      toggleVisibility={handleSolToggle}
-      copyToClipboard={CopyToClipBoard}
-    
-     
-    />
+      <WalletComponent
+        network="Solana"
+        handleAddWallet={handleSolAddWallet}
+        handleClearStorage={handleSolClearStorage}
+        publicKeys={SolPublicKeys}
+        privateKeys={SolPrivateKeys}
+        visibility={SolVisibility}
+        toggleVisibility={handleSolToggle}
+        copyToClipboard={CopyToClipBoard}
+      />
     </>
   );
 }

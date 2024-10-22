@@ -6,25 +6,41 @@ import { ToastContainer, toast } from "react-toastify";
 import { Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import WalletComponent from "./WalletComponent";
+import CryptoJS from "crypto-js";
 
-
+const secretKey = "********";
 
 export const EthWallet = ({ mnemonic, clearMnemonic }) => {
+  const encryptData = (data) => CryptoJS.AES.encrypt(JSON.stringify(data), secretKey).toString();
+
+  const decryptData = (encryptedData) => {
+    try {
+      const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+      return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    } catch (e) {
+      console.error("Error decrypting data", e);
+      return null;
+    }
+  };
+
   const [ETHCurrentIndex, setETHCurrentIndex] = useState(() => {
     const storedETHCurrentIndex = localStorage.getItem("ETHCurrentIndex");
-    return storedETHCurrentIndex ? JSON.parse(storedETHCurrentIndex) : 0;
+    return storedETHCurrentIndex ? decryptData(storedETHCurrentIndex) : 0;
   });
+
   const [ETHPublicKeys, setETHPublicKeys] = useState(() => {
     const storedPublicKeys = localStorage.getItem("ETHPublicKeys");
-    return storedPublicKeys ? JSON.parse(storedPublicKeys) : [];
+    return storedPublicKeys ? decryptData(storedPublicKeys) : [];
   });
+
   const [ETHPrivateKeys, setETHPrivateKeys] = useState(() => {
     const storedPrivateKeys = localStorage.getItem("ETHPrivateKeys");
-    return storedPrivateKeys ? JSON.parse(storedPrivateKeys) : [];
+    return storedPrivateKeys ? decryptData(storedPrivateKeys) : [];
   });
+
   const [ETHVisibility, setETHVisibility] = useState(() => {
     const storedVisibility = localStorage.getItem("ETHVisibility");
-    return storedVisibility ? JSON.parse(storedVisibility) : [];
+    return storedVisibility ? decryptData(storedVisibility) : [];
   });
 
   const CopyToClipBoard = async (passedVar) => {
@@ -35,30 +51,32 @@ export const EthWallet = ({ mnemonic, clearMnemonic }) => {
   };
 
   useEffect(() => {
-    localStorage.setItem("ETHPublicKeys", JSON.stringify(ETHPublicKeys));
-    localStorage.setItem("ETHPrivateKeys", JSON.stringify(ETHPrivateKeys));
-    localStorage.setItem("ETHVisibility", JSON.stringify(ETHVisibility));
-    localStorage.setItem("ETHCurrentIndex", JSON.stringify(ETHCurrentIndex));
+    localStorage.setItem("ETHPublicKeys", encryptData(ETHPublicKeys));
+    localStorage.setItem("ETHPrivateKeys", encryptData(ETHPrivateKeys));
+    localStorage.setItem("ETHVisibility", encryptData(ETHVisibility));
+    localStorage.setItem("ETHCurrentIndex", encryptData(ETHCurrentIndex));
   }, [ETHPublicKeys, ETHPrivateKeys, ETHVisibility, ETHCurrentIndex]);
 
   const handleETHClearStorage = () => {
-    if(mnemonic){setETHPublicKeys([]);
-    setETHPrivateKeys([]);
-    setETHVisibility([]);
-    setETHCurrentIndex(0);
+    if (mnemonic) {
+      setETHPublicKeys([]);
+      setETHPrivateKeys([]);
+      setETHVisibility([]);
+      setETHCurrentIndex(0);
 
-    // Clear localStorage
-    localStorage.removeItem("ETHPublicKeys");
-    localStorage.removeItem("ETHPrivateKeys");
-    localStorage.removeItem("ETHVisibility");
-    localStorage.removeItem("ETHCurrentIndex");
+      
+      localStorage.removeItem("ETHPublicKeys");
+      localStorage.removeItem("ETHPrivateKeys");
+      localStorage.removeItem("ETHVisibility");
+      localStorage.removeItem("ETHCurrentIndex");
 
-    // Clear the mnemonic as well
-    clearMnemonic();
+     
+      clearMnemonic();
 
-    setTimeout(() => {
-      toast.success("Data cleared successfully!", { containerId: "ETHToast" });
-    }, 0);}
+      setTimeout(() => {
+        toast.success("Data cleared successfully!", { containerId: "ETHToast" });
+      }, 0);
+    }
   };
 
   const handleETHToggle = (index) => {
@@ -100,7 +118,7 @@ export const EthWallet = ({ mnemonic, clearMnemonic }) => {
 
   return (
     <>
-     <ToastContainer
+      <ToastContainer
         position="bottom-right"
         autoClose={1000}
         hideProgressBar={false}
@@ -116,17 +134,16 @@ export const EthWallet = ({ mnemonic, clearMnemonic }) => {
         containerId={`ETHToast`}
       />
 
-     <WalletComponent
-      network="Ethereum"
-      handleAddWallet={handleETHAddWallet}
-      handleClearStorage={handleETHClearStorage}
-      publicKeys={ETHPublicKeys}
-      privateKeys={ETHPrivateKeys}
-      visibility={ETHVisibility}
-      toggleVisibility={handleETHToggle}
-      copyToClipboard={CopyToClipBoard}
-     
-     />
+      <WalletComponent
+        network="Ethereum"
+        handleAddWallet={handleETHAddWallet}
+        handleClearStorage={handleETHClearStorage}
+        publicKeys={ETHPublicKeys}
+        privateKeys={ETHPrivateKeys}
+        visibility={ETHVisibility}
+        toggleVisibility={handleETHToggle}
+        copyToClipboard={CopyToClipBoard}
+      />
     </>
   );
 };

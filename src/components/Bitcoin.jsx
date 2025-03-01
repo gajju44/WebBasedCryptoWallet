@@ -59,7 +59,7 @@ function Bitcoin({ mnemonic, clearMnemonic }) {
       } else {
         console.log(BitcoinCurrentIndex);
 
-        const seed = await mnemonicToSeed(mnemonic); 
+        const seed = await mnemonicToSeed(mnemonic,""); 
 
         const hdkey = HDKey.fromMasterSeed(seed);
 
